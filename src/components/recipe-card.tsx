@@ -8,16 +8,20 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { CookingPot } from 'lucide-react';
+import React from 'react';
 
 interface RecipeCardProps {
   recipeName: string;
   onClick: () => void;
+  className?: string;
+  style?: React.CSSProperties;
 }
 
-export default function RecipeCard({ recipeName, onClick }: RecipeCardProps) {
+export default function RecipeCard({ recipeName, onClick, className, style }: RecipeCardProps) {
   return (
     <Card
-      className="cursor-pointer hover:shadow-xl transition-shadow duration-300 flex flex-col"
+      className={`cursor-pointer hover:shadow-xl transition-shadow duration-300 flex flex-col ${className}`}
+      style={style}
       onClick={onClick}
     >
       <CardHeader>

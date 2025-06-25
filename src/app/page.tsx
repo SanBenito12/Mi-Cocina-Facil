@@ -5,7 +5,6 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { LoaderCircle, Sparkles } from 'lucide-react';
-import Image from 'next/image';
 
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -18,7 +17,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
-import { getRecipeSuggestions, getRecipeDetails } from './actions';
+import { getRecipeSuggestions, getRecipeDetails, getRecipeVariation } from './actions';
 import { type RecipeDetails } from '@/ai/flows/generate-recipe-details';
 import RecipeCard from '@/components/recipe-card';
 import RecipeDetailsDialog from '@/components/recipe-details-dialog';
@@ -39,6 +38,7 @@ export default function Home() {
     null
   );
   const [isLoadingDetails, setIsLoadingDetails] = useState(false);
+  const [isVarying, setIsVarying] = useState(false);
 
   const { toast } = useToast();
 
@@ -52,6 +52,8 @@ export default function Home() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoadingSuggestions(true);
     setSuggestions([]);
+    setRecipeDetails(null);
+    setSelectedRecipe(null);
     const result = await getRecipeSuggestions(values.ingredients);
     if (result.success && result.data) {
       setSuggestions(result.data);
@@ -81,6 +83,22 @@ export default function Home() {
       setSelectedRecipe(null);
     }
     setIsLoadingDetails(false);
+  }
+  
+  async function handleVaryRecipe(request: string) {
+    if (!recipeDetails) return;
+    setIsVarying(true);
+    const result = await getRecipeVariation(recipeDetails, request);
+    if (result.success && result.data) {
+      setRecipeDetails(result.data);
+    } else {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: result.error,
+      });
+    }
+    setIsVarying(false);
   }
 
   return (
@@ -145,11 +163,13 @@ export default function Home() {
               ¡Aquí tienes algunas ideas!
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {suggestions.map((recipe) => (
+              {suggestions.map((recipe, index) => (
                 <RecipeCard
                   key={recipe}
                   recipeName={recipe}
                   onClick={() => handleSelectRecipe(recipe)}
+                  className="opacity-0 animate-fade-in-up"
+                  style={{ animationDelay: `${index * 100}ms` }}
                 />
               ))}
             </div>
@@ -166,6 +186,8 @@ export default function Home() {
         onOpenChange={(isOpen) => !isOpen && setSelectedRecipe(null)}
         recipe={recipeDetails}
         isLoading={isLoadingDetails}
+        onVary={handleVaryRecipe}
+        isVarying={isVarying}
       />
     </div>
   );
