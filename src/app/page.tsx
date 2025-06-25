@@ -22,6 +22,7 @@ import { type RecipeDetails } from '@/ai/flows/generate-recipe-details';
 import RecipeCard from '@/components/recipe-card';
 import RecipeDetailsDialog from '@/components/recipe-details-dialog';
 import Logo from '@/components/icons/logo';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 const formSchema = z.object({
   ingredients: z
@@ -103,16 +104,20 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="container mx-auto px-4 py-6">
+      <header className="container mx-auto px-4 py-6 flex justify-between items-center animate-fade-in">
         <div className="flex items-center gap-3">
           <Logo className="w-10 h-10 text-primary" />
           <h1 className="text-2xl md:text-3xl font-bold text-primary">
             Mi Cocina Fácil
           </h1>
         </div>
+        <ThemeToggle />
       </header>
       <main className="flex-grow container mx-auto px-4 py-8">
-        <div className="max-w-2xl mx-auto text-center">
+        <div 
+          className="max-w-2xl mx-auto text-center animate-slide-in-from-bottom"
+          style={{ animationDelay: '200ms', animationFillMode: 'backwards' }}
+        >
           <h2 className="text-3xl md:text-4xl font-bold mb-2">
             ¿Qué tienes en tu despensa?
           </h2>

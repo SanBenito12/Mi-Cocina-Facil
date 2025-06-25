@@ -20,7 +20,7 @@ interface RecipeCardProps {
 export default function RecipeCard({ recipeName, onClick, className, style }: RecipeCardProps) {
   return (
     <Card
-      className={`cursor-pointer hover:shadow-xl transition-shadow duration-300 flex flex-col ${className}`}
+      className={`cursor-pointer hover:shadow-xl transition-all duration-300 hover:scale-105 flex flex-col ${className}`}
       style={style}
       onClick={onClick}
     >
